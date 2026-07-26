@@ -1,0 +1,357 @@
+/* weather.css */
+
+/* --- Reset & Global --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', sans-serif;
+}
+
+body {
+    background-color: #0A0A1E;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+/* --- Mobile Frame --- */
+.mobile-frame {
+    width: 390px;
+    height: 844px;
+    background: #000;
+    border-radius: 54px;
+    padding: 14px;
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6), inset 0 0 0 2px #333;
+    position: relative;
+    z-index: 10;
+}
+
+/* --- 3D Scene Container --- */
+.screen-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 40px;
+    background: #000;
+    position: relative;
+    perspective: 1200px;
+    transform-style: preserve-3d;
+}
+
+/* --- Base Screen Styles --- */
+.screen {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    border-radius: 40px;
+    overflow: hidden;
+    backface-visibility: hidden;
+    will-change: transform, opacity;
+    /* GPU accelerated properties */
+    transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1),
+                opacity 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* Default initial state for hidden screens (pushed back and rotated right) */
+.screen.hidden {
+    opacity: 0;
+    transform: translateZ(-50px) rotateY(15deg) scale(0.96);
+}
+
+/* Hidden state for screens pushed back and rotated left */
+.screen.hidden-left {
+    opacity: 0;
+    transform: translateZ(-50px) rotateY(-15deg) scale(0.96);
+}
+
+/* Active screen (In front, full size) */
+.screen.active {
+    opacity: 1;
+    transform: translateZ(0) rotateY(0deg) scale(1);
+    pointer-events: auto;
+    z-index: 5;
+}
+
+/* Outgoing screen pushing back to the left */
+.screen.outgoing-left {
+    opacity: 0;
+    transform: translateZ(-50px) rotateY(-15deg) scale(0.98);
+    z-index: 2;
+}
+
+/* Outgoing screen pushing back to the right */
+.screen.outgoing-right {
+    opacity: 0;
+    transform: translateZ(-50px) rotateY(15deg) scale(0.98);
+    z-index: 2;
+}
+
+/* --- 1. Splash Screen --- */
+.splash-screen {
+    background: #FAFAFA;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.splash-icon {
+    width: 140px;
+    height: 140px;
+    border-radius: 36px;
+    background: linear-gradient(135deg, #4ea3df 0%, #154cbd 100%);
+    box-shadow: 0 20px 40px rgba(21, 76, 189, 0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pulseLogo 2s infinite ease-in-out;
+}
+
+.splash-icon img {
+    width: 90px;
+    height: 90px;
+}
+
+@keyframes pulseLogo {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.04); }
+    100% { transform: scale(1); }
+}
+
+/* --- 2. Search Screen --- */
+.search-screen {
+    background: linear-gradient(180deg, #45a4cf 0%, #10254c 100%);
+    padding: 60px 24px 24px;
+}
+
+.search-header {
+    margin-bottom: 24px;
+}
+
+.search-bar {
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+}
+
+.search-bar input {
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-size: 16px;
+    font-weight: 500;
+    flex: 1;
+    margin-left: 12px;
+}
+
+.search-bar input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.clear-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.clear-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+/* Search Results Card */
+.search-results-container {
+    background: #112841; 
+    border-radius: 24px;
+    padding: 12px 0;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    max-height: calc(100% - 80px);
+    overflow-y: auto;
+}
+
+.search-results-container::-webkit-scrollbar {
+    display: none;
+}
+
+.result-item {
+    display: flex;
+    align-items: center;
+    padding: 18px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+
+.result-item:last-child {
+    border-bottom: none;
+}
+
+.result-item:active {
+    background: rgba(255,255,255,0.06);
+}
+
+.result-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: rgba(125, 211, 252, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 18px;
+    flex-shrink: 0;
+}
+
+.result-text h3 {
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.result-text p {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 13px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 220px;
+}
+
+/* --- 3. Weather Details Screen --- */
+.weather-screen {
+    background: #2b455b;
+    padding: 50px 24px 24px;
+}
+
+.search-bar-mock {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    margin-bottom: 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-bar-mock:active {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.mock-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 16px;
+    margin-left: 12px;
+    font-weight: 500;
+}
+
+.weather-card {
+    background: linear-gradient(180deg, #5b9dbf 0%, #3a8fb7 100%);
+    border-radius: 36px;
+    padding: 36px 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    height: calc(100% - 76px);
+    display: flex;
+    flex-direction: column;
+}
+
+.weather-header {
+    margin-bottom: 30px;
+}
+
+.city-name {
+    color: #fff;
+    font-size: 34px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.date-time {
+    color: rgba(255, 255, 255, 0.75);
+    font-size: 13px;
+}
+
+.weather-main-icon {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 16px;
+    filter: drop-shadow(0 15px 20px rgba(0,0,0,0.15));
+}
+
+.weather-main-icon img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.temperature {
+    color: #fff;
+    font-size: 84px;
+    font-weight: 500;
+    line-height: 1;
+    margin-bottom: 12px;
+    letter-spacing: -3px;
+}
+
+.condition {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 19px;
+    margin-bottom: auto;
+}
+
+.weather-details-card {
+    background: rgba(255, 255, 255, 0.12);
+    border-radius: 24px;
+    padding: 20px 16px;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.detail-divider {
+    width: 1px;
+    background: rgba(255, 255, 255, 0.15);
+    margin: 0 4px;
+}
+
+.detail-label {
+    color: rgba(255, 255, 255, 0.65);
+    font-size: 13px;
+    margin-bottom: 10px;
+}
+
+.detail-value {
+    color: #fff;
+    font-size: 16px;
+    font-weight: 600;
+}

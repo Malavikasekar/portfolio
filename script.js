@@ -8,164 +8,33 @@ document.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const loader = document.getElementById('page-loader');
         if (loader) loader.classList.add('loaded');
-    }, 600);
+    }, 2400);
 
-    // ─── Custom Cursor ───
-    const cursorGlow = document.getElementById('cursor-glow');
-    const cursorDot = document.getElementById('cursor-dot');
-    let mouseX = 0, mouseY = 0;
-    let cursorGlowX = 0, cursorGlowY = 0;
-    let cursorDotX = 0, cursorDotY = 0;
+    // ─── Custom Cursor Removed ───
 
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
-    });
-
-    function animateCursor() {
-        if(cursorGlow && cursorDot) {
-            // Smooth follow for glow
-            cursorGlowX += (mouseX - cursorGlowX) * 0.08;
-            cursorGlowY += (mouseY - cursorGlowY) * 0.08;
-            cursorGlow.style.left = cursorGlowX + 'px';
-            cursorGlow.style.top = cursorGlowY + 'px';
-
-            // Faster follow for dot
-            cursorDotX += (mouseX - cursorDotX) * 0.2;
-            cursorDotY += (mouseY - cursorDotY) * 0.2;
-            cursorDot.style.left = cursorDotX + 'px';
-            cursorDot.style.top = cursorDotY + 'px';
-        }
-        requestAnimationFrame(animateCursor);
-    }
-    animateCursor();
-
-    // Hover state for cursor
-    const hoverables = document.querySelectorAll('a, button, .tag, .interest-chip, .btn, .chip, .mini-chip, .pc-github');
-    hoverables.forEach(el => {
-        el.addEventListener('mouseenter', () => { 
-            if(cursorDot) cursorDot.classList.add('hovering'); 
-            if(cursorGlow) cursorGlow.classList.add('hovering');
-        });
-        el.addEventListener('mouseleave', () => { 
-            if(cursorDot) cursorDot.classList.remove('hovering'); 
-            if(cursorGlow) cursorGlow.classList.remove('hovering');
-        });
-    });
-
-    // ─── Particle Canvas ───
-    const canvas = document.getElementById('particle-canvas');
-    if (canvas) {
-        const ctx = canvas.getContext('2d');
-        let particles = [];
-        let canvasMouseX = 0, canvasMouseY = 0;
-
-        function resizeCanvas() {
-            const hero = document.getElementById('hero');
-            if (hero) {
-                canvas.width = hero.offsetWidth;
-                canvas.height = hero.offsetHeight;
-            }
-        }
-        resizeCanvas();
-        window.addEventListener('resize', resizeCanvas);
-
-        class Particle {
-            constructor() {
-                this.reset();
-            }
-
-            reset() {
-                this.x = Math.random() * canvas.width;
-                this.y = Math.random() * canvas.height;
-                this.size = Math.random() * 2.5 + 0.5;
-                this.speedX = (Math.random() - 0.5) * 0.5;
-                this.speedY = (Math.random() - 0.5) * 0.5;
-                this.opacity = Math.random() * 0.5 + 0.1;
-                this.color = ['rgba(168, 85, 247,', 'rgba(244, 114, 182,', 'rgba(135, 206, 235,'][Math.floor(Math.random() * 3)];
-            }
-
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                // Mouse repulsion
-                const dx = this.x - canvasMouseX;
-                const dy = this.y - canvasMouseY;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-                if (dist < 120) {
-                    const force = (120 - dist) / 120;
-                    this.x += (dx / dist) * force * 2;
-                    this.y += (dy / dist) * force * 2;
-                }
-
-                // Wrap around
-                if (this.x < 0) this.x = canvas.width;
-                if (this.x > canvas.width) this.x = 0;
-                if (this.y < 0) this.y = canvas.height;
-                if (this.y > canvas.height) this.y = 0;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = this.color + this.opacity + ')';
-                ctx.fill();
-            }
-        }
-
-        // Create particles
-        const particleCount = Math.min(80, Math.floor((canvas.width * canvas.height) / 15000));
-        for (let i = 0; i < particleCount; i++) {
-            particles.push(new Particle());
-        }
-
-        function drawConnections() {
-            for (let i = 0; i < particles.length; i++) {
-                for (let j = i + 1; j < particles.length; j++) {
-                    const dx = particles[i].x - particles[j].x;
-                    const dy = particles[i].y - particles[j].y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < 150) {
-                        const opacity = (1 - dist / 150) * 0.15;
-                        ctx.beginPath();
-                        ctx.moveTo(particles[i].x, particles[i].y);
-                        ctx.lineTo(particles[j].x, particles[j].y);
-                        ctx.strokeStyle = `rgba(168, 85, 247, ${opacity})`;
-                        ctx.lineWidth = 0.5;
-                        ctx.stroke();
-                    }
-                }
-            }
-        }
-
-        function animateParticles() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                p.update();
-                p.draw();
+    // ─── Professional Interactive Hero Glow ───
+    const hero = document.getElementById('hero');
+    const glow = document.getElementById('hero-mouse-glow');
+    
+    if (hero && glow) {
+        hero.addEventListener('mousemove', (e) => {
+            const rect = hero.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            requestAnimationFrame(() => {
+                glow.style.transform = `translate(calc(${x}px - 50%), calc(${y}px - 50%))`;
             });
-            drawConnections();
-            requestAnimationFrame(animateParticles);
-        }
-        animateParticles();
-
-        // Track mouse for particles
-        document.getElementById('hero').addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            canvasMouseX = e.clientX - rect.left;
-            canvasMouseY = e.clientY - rect.top;
         });
     }
 
     // ─── Typewriter Effect ───
     const roles = [
-        'Python Developer 🐍',
-        'Machine Learning Enthusiast 🤖',
-        'Problem Solver 💡',
-        'Web Developer 🌐',
-        'Quick Learner 🚀'
+        'Creative Coder 💻',
+        'Innovative Thinker 🧠',
+        'UI/UX Enthusiast ✨',
+        'Tech Explorer 🔭',
+        'System Architect 🏗️'
     ];
     let roleIndex = 0;
     let charIndex = 0;
@@ -427,4 +296,51 @@ document.addEventListener('DOMContentLoaded', () => {
             weatherInterval = setInterval(() => rotateWeatherCarousel('right'), 3000);
         });
     });
+
+    // ─── Stacked Cards Carousel (Attendance App) ───
+    const stackCards = document.querySelectorAll('.stack-card');
+    let stackPositions = ['stack-pos-1', 'stack-pos-2', 'stack-pos-3', 'stack-pos-4', 'stack-pos-5'];
+
+    function rotateStack() {
+        if (stackCards.length === 0) return;
+        
+        // Find which card is currently at the front
+        let frontCardIndex = -1;
+        stackCards.forEach((card, index) => {
+            if (card.classList.contains('stack-pos-1')) {
+                frontCardIndex = index;
+            }
+        });
+
+        if (frontCardIndex !== -1) {
+            // Animate it out to the right
+            stackCards[frontCardIndex].classList.add('stack-out');
+            
+            setTimeout(() => {
+                stackCards[frontCardIndex].classList.remove('stack-out');
+                
+                // Shift array: last element becomes first
+                stackPositions.unshift(stackPositions.pop());
+                
+                stackCards.forEach((card, index) => {
+                    // Remove old positions
+                    card.classList.remove('stack-pos-1', 'stack-pos-2', 'stack-pos-3', 'stack-pos-4', 'stack-pos-5');
+                    // Add new position
+                    card.classList.add(stackPositions[index]);
+                });
+            }, 400); // Wait for the swipe out animation to finish
+        }
+    }
+
+    let stackInterval = setInterval(rotateStack, 3000);
+
+    // Allow manual click
+    const stackContainer = document.querySelector('.card-stack-container');
+    if (stackContainer) {
+        stackContainer.addEventListener('click', () => {
+            clearInterval(stackInterval);
+            rotateStack();
+            stackInterval = setInterval(rotateStack, 3000);
+        });
+    }
 });

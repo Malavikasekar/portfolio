@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 36 36">
+  <defs>
+    <linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F472B6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0EA5E9;stop-opacity:1" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="1" dy="2" stdDeviation="2" flood-opacity="0.4" />
+    </filter>
+  </defs>
+  <!-- Hand icon for pointer -->
+  <path d="M14,16 V5 C14,3 17,3 17,5 V16 H19 V4 C19,2 22,2 22,4 V16 H24 V6 C24,4 27,4 27,6 V16 H29 V8 C29,6 32,6 32,8 V22 C32,28 26,33 20,33 C14,33 11,29 8,23 L5,18 C4,16.5 5.5,15 7,16 L11,18 V16 H14 Z" fill="url(#grad2)" stroke="#FFFFFF" stroke-width="2" filter="url(#shadow)" stroke-linejoin="round" />
+</svg>
